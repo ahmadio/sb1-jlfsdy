@@ -40,8 +40,14 @@ const formSchema = z.object({
   message: z.string().optional(),
 });
 
-export function DonationForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+type FormValues = z.infer<typeof formSchema>;
+
+interface DonationFormProps {
+  onSuccess: () => void;
+}
+
+export function DonationForm({ onSuccess }: DonationFormProps) {
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       project: "",
@@ -54,9 +60,14 @@ export function DonationForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // TODO: Implement Stripe payment processing
+  async function onSubmit(values: FormValues) {
+    try {
+      // TODO: Implement payment processing
+      console.log(values);
+      onSuccess();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -66,10 +77,7 @@ export function DonationForm() {
           control={form.control}
           name="project"
           render={({ field }) => (
-            <ProjectSelect
-              value={field.value}
-              onChange={field.onChange}
-            />
+            <ProjectSelect value={field.value} onChange={field.onChange} />
           )}
         />
 
@@ -77,10 +85,7 @@ export function DonationForm() {
           control={form.control}
           name="amount"
           render={({ field }) => (
-            <DonationAmount
-              value={field.value}
-              onChange={field.onChange}
-            />
+            <DonationAmount value={field.value} onChange={field.onChange} />
           )}
         />
 
@@ -88,10 +93,7 @@ export function DonationForm() {
           control={form.control}
           name="frequency"
           render={({ field }) => (
-            <DonationFrequency
-              value={field.value}
-              onChange={field.onChange}
-            />
+            <DonationFrequency value={field.value} onChange={field.onChange} />
           )}
         />
 
@@ -129,7 +131,11 @@ export function DonationForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="john@example.com" type="email" {...field} />
+                  <Input
+                    placeholder="john@example.com"
+                    type="email"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

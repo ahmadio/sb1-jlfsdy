@@ -1,6 +1,6 @@
 "use client";
 
-import { Control } from "react-hook-form";
+import { Control, UseFormSetValue } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -11,13 +11,27 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { CreditCard, Landmark } from "lucide-react";
 
+type FormValues = {
+  name: string;
+  email: string;
+  paymentMethod: string;
+  project: string;
+  amount: string;
+  frequency: "one-time" | "monthly";
+  message?: string;
+};
+
 interface PaymentMethodProps {
-  control: Control<any>;
+  control: Control<FormValues>;
   value: string;
-  setValue: (name: string, value: string) => void;
+  setValue: UseFormSetValue<FormValues>;
 }
 
-export function PaymentMethod({ control, value, setValue }: PaymentMethodProps) {
+export function PaymentMethod({
+  control,
+  value,
+  setValue,
+}: PaymentMethodProps) {
   return (
     <FormItem className="space-y-3">
       <FormLabel>Payment Method</FormLabel>
@@ -29,11 +43,7 @@ export function PaymentMethod({ control, value, setValue }: PaymentMethodProps) 
         >
           <FormItem>
             <FormControl>
-              <RadioGroupItem
-                value="card"
-                className="peer sr-only"
-                id="card"
-              />
+              <RadioGroupItem value="card" className="peer sr-only" id="card" />
             </FormControl>
             <label
               htmlFor="card"
@@ -45,11 +55,7 @@ export function PaymentMethod({ control, value, setValue }: PaymentMethodProps) 
           </FormItem>
           <FormItem>
             <FormControl>
-              <RadioGroupItem
-                value="bank"
-                className="peer sr-only"
-                id="bank"
-              />
+              <RadioGroupItem value="bank" className="peer sr-only" id="bank" />
             </FormControl>
             <label
               htmlFor="bank"
